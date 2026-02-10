@@ -1,8 +1,15 @@
 services:
-  - type: static_site
-    name: blaze-business-os-app
+  - type: web
+    name: blaze-business-os
+    runtime: node
     repo: https://github.com/Blaze9246/blaze-business-os
     branch: main
     buildCommand: cd frontend && npm install && npm run build
-    publishPath: frontend/out
+    startCommand: cd frontend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    plan: starter
     autoDeploy: true
