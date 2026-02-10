@@ -1,7 +1,7 @@
 services:
   - type: static_site
-    name: blaze-business-os
+    name: blaze-business-os-app-v2
     repo: https://github.com/Blaze9246/blaze-business-os
     branch: main
     buildCommand: cd frontend && npm install && npm run build
-    publishPath: frontend/dist
+    publishPath: dist
