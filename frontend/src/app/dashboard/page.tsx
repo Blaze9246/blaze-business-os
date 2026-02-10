@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@clerk/nextjs";
 import {
   TrendingUp,
   CheckCircle2,
@@ -99,15 +100,17 @@ const recentActivity = [
 ];
 
 export default function DashboardPage() {
+  const { user } = useUser();
+
   return (
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-zinc-100">
-          Good {getGreeting()}, Zain!
+          Good {getGreeting()}, {user?.firstName || "Zain"}!
         </h1>
         <p className="text-zinc-500 mt-1">
-          Here's what's happening with your business today.
+          Here&apos;s what&apos;s happening with your business today.
         </p>
       </div>
 
@@ -127,10 +130,9 @@ export default function DashboardPage() {
                   <Icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
                 <div
-                  className={cn(
-                    "flex items-center gap-1 text-xs font-medium",
+                  className={`flex items-center gap-1 text-xs font-medium ${
                     stat.trend === "up" ? "text-success" : "text-error"
-                  )}
+                  }`}
                 >
                   <TrendIcon className="w-3 h-3" />
                   {stat.change}
@@ -197,24 +199,26 @@ export default function DashboardPage() {
             ].map((agent) => (
               <div key={agent.name} className="flex items-center gap-3">
                 <div
-                  className={cn(
-                    "w-2 h-2 rounded-full",
-                    agent.status === "Active" && "bg-success animate-pulse",
-                    agent.status === "Busy" && "bg-accent-400",
-                    agent.status === "Offline" && "bg-zinc-600"
-                  )}
+                  className={`w-2 h-2 rounded-full ${
+                    agent.status === "Active"
+                      ? "bg-success animate-pulse"
+                      : agent.status === "Busy"
+                      ? "bg-accent-400"
+                      : "bg-zinc-600"
+                  }`}
                 />
                 <div className="flex-1">
                   <p className="text-sm font-medium text-zinc-100">{agent.name}</p>
                   <p className="text-xs text-zinc-500">{agent.task}</p>
                 </div>
                 <span
-                  className={cn(
-                    "text-xs px-2 py-1 rounded-full",
-                    agent.status === "Active" && "bg-success/10 text-success",
-                    agent.status === "Busy" && "bg-accent-500/10 text-accent-400",
-                    agent.status === "Offline" && "bg-zinc-500/10 text-zinc-500"
-                  )}
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    agent.status === "Active"
+                      ? "bg-success/10 text-success"
+                      : agent.status === "Busy"
+                      ? "bg-accent-500/10 text-accent-400"
+                      : "bg-zinc-500/10 text-zinc-500"
+                  }`}
                 >
                   {agent.status}
                 </span>
@@ -232,8 +236,4 @@ function getGreeting() {
   if (hour < 12) return "morning";
   if (hour < 18) return "afternoon";
   return "evening";
-}
-
-function cn(...classes: (string | boolean | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
 }

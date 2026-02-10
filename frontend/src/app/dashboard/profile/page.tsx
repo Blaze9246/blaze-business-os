@@ -1,40 +1,33 @@
+"use client";
+
+import { UserProfile } from "@clerk/nextjs";
+
 export default function ProfilePage() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold text-zinc-100 mb-6">User Profile</h1>
-      <div className="max-w-md bg-surface border border-border rounded-xl p-6">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
-            <span className="text-2xl font-bold text-white">Z</span>
-          </div>
-          <div>
-            <p className="text-lg font-semibold text-zinc-100">Zain Moolla</p>
-            <p className="text-sm text-zinc-500">Admin</p>
-          </div>
-        </div>
-        
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Email</label>
-            <p className="text-zinc-100">zain@blazeignite.com</p>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Role</label>
-            <p className="text-zinc-100">Administrator</p>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1">Company</label>
-            <p className="text-zinc-100">Blaze Ignite</p>
-          </div>
-        </div>
-        
-        <div className="mt-6 pt-6 border-t border-border">
-          <button className="text-sm text-primary-400 hover:text-primary-300">
-            Edit Profile (Coming Soon)
-          </button>
-        </div>
+      <div className="max-w-4xl">
+        <UserProfile
+          appearance={{
+            elements: {
+              rootBox: "w-full",
+              card: "bg-surface border border-border shadow-xl",
+              navbar: "bg-surface border-r border-border",
+              navbarButton: "text-zinc-400 hover:text-zinc-100",
+              headerTitle: "text-zinc-100",
+              headerSubtitle: "text-zinc-400",
+              formFieldLabel: "text-zinc-300",
+              formFieldInput: "bg-void border-border text-zinc-100 placeholder:text-zinc-500",
+              formButtonPrimary: "bg-primary-600 hover:bg-primary-700 text-white",
+              formButtonReset: "text-zinc-400 hover:text-zinc-100",
+              profileSectionTitle: "text-zinc-100",
+              profileSectionSubtitle: "text-zinc-400",
+              badge: "bg-primary-500/20 text-primary-400",
+              identityPreviewText: "text-zinc-300",
+              identityPreviewEditButton: "text-primary-400 hover:text-primary-300",
+            },
+          }}
+        />
       </div>
     </div>
   );

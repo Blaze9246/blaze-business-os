@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useUser, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx, type ClassValue } from "clsx";
@@ -33,6 +34,8 @@ const navItems = [
 ];
 
 export function Sidebar() {
+  const { user } = useUser();
+  const { signOut } = useClerk();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -96,22 +99,33 @@ export function Sidebar() {
             collapsed ? "justify-center" : "justify-between"
           )}
         >
-          {!collapsed && (
+          {!collapsed && user && (
             <>
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center">
-                  <span className="text-sm font-medium text-primary-400">Z</span>
-                </div>
+                {user.imageUrl ? (
+                  <img
+                    src={user.imageUrl}
+                    alt={user.fullName || "User"}
+                    className="w-8 h-8 rounded-full bg-surface-elevated"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary-400">
+                      {user.firstName?.[0] || "Z"}
+                    </span>
+                  </div>
+                )}
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-zinc-100 truncate">
-                    Zain Moolla
+                    {user.fullName || "Zain Moolla"}
                   </p>
                   <p className="text-xs text-zinc-500 truncate">
-                    Admin
+                    {user.primaryEmailAddress?.emailAddress || "admin"}
                   </p>
                 </div>
               </div>
               <button
+                onClick={() => signOut()}
                 className="p-2 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-surface-elevated transition-colors"
                 title="Sign out"
               >
@@ -119,8 +133,20 @@ export function Sidebar() {
               </button>
             </>
           )}
+          {!collapsed && !user && (
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center">
+                <span className="text-sm font-medium text-primary-400">Z</span>
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-zinc-100 truncate">Zain Moolla</p>
+                <p className="text-xs text-zinc-500 truncate">Admin</p>
+              </div>
+            </div>
+          )}
           {collapsed && (
             <button
+              onClick={() => signOut?.()}
               className="p-2 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-surface-elevated transition-colors"
               title="Sign out"
             >
