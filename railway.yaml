@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: blaze-business-os-prod
+    runtime: node
+    repo: https://github.com/Blaze9246/blaze-business-os
+    branch: main
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        value: pk_test_YWJvdmUtd2hpcHBldC0zNi5jbGVyay5hY2NvdW50cy5kZXYk
+      - key: CLERK_SECRET_KEY
+        value: sk_test_k61iDDorYAqa5TSxzaw1xcHQz3PH4blo1XSSp6ztqJ
+    plan: starter
+    autoDeploy: true
