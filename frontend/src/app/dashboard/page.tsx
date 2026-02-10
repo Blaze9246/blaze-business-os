@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
 import {
   TrendingUp,
   CheckCircle2,
@@ -100,14 +99,12 @@ const recentActivity = [
 ];
 
 export default function DashboardPage() {
-  const { user } = useUser();
-
   return (
     <div className="p-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-zinc-100">
-          Good {getGreeting()}, {user?.firstName || "there"}!
+          Good {getGreeting()}, Zain!
         </h1>
         <p className="text-zinc-500 mt-1">
           Here's what's happening with your business today.
