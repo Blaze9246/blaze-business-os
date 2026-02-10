@@ -1,159 +1,317 @@
-export default function DashboardPage() {
+'use client';
+
+import { useState } from 'react';
+
+export default function Dashboard() {
+  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const menuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+    { id: 'tasks', label: 'Tasks', icon: '✓' },
+    { id: 'agents', label: 'AI Agents', icon: '🤖' },
+    { id: 'stores', label: 'Stores', icon: '🏪' },
+    { id: 'settings', label: 'Settings', icon: '⚙️' },
+  ];
+
+  const renderContent = () => {
+    switch(currentPage) {
+      case 'dashboard':
+        return <DashboardContent />;
+      case 'tasks':
+        return <TasksContent />;
+      case 'agents':
+        return <AgentsContent />;
+      case 'stores':
+        return <StoresContent />;
+      case 'settings':
+        return <SettingsContent />;
+      default:
+        return <DashboardContent />;
+    }
+  };
+
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: '#0A0A0B', 
-      color: 'white',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      {/* Sidebar */}
-      <div style={{ 
-        position: 'fixed', 
-        left: 0, 
-        top: 0, 
-        bottom: 0, 
-        width: '250px', 
-        background: '#131316',
-        borderRight: '1px solid #27272a',
-        padding: '1rem'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
-          <div style={{ 
-            width: '32px', 
-            height: '32px', 
-            background: 'linear-gradient(135deg, #8B5CF6, #A855F7)',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <span style={{ fontSize: '1.2rem' }}>🔥</span>
+    <div className="min-h-screen bg-[#0A0A0B] text-white">
+      {/* Mobile Header */}
+      <div className="lg:hidden flex items-center justify-between p-4 bg-[#131316] border-b border-[#27272a]">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-lg flex items-center justify-center">
+            <span>🔥</span>
           </div>
-          <span style={{ fontWeight: 600 }}>Blaze OS</span>
+          <span className="font-semibold">Blaze OS</span>
+        </div>
+        <button 
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 text-gray-400"
+        >
+          {sidebarOpen ? '✕' : '☰'}
+        </button>
+      </div>
+
+      {/* Sidebar */}
+      <div className={`
+        fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#131316] border-r border-[#27272a] p-4
+        transform transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <div className="hidden lg:flex items-center gap-3 mb-8">
+          <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-lg flex items-center justify-center">
+            <span>🔥</span>
+          </div>
+          <span className="font-semibold">Blaze OS</span>
         </div>
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          {[
-            { label: 'Dashboard', active: true },
-            { label: 'Tasks' },
-            { label: 'AI Agents' },
-            { label: 'Stores' },
-            { label: 'Settings' },
-          ].map((item) => (
-            <div
-              key={item.label}
-              style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                background: item.active ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
-                color: item.active ? '#A855F7' : '#A1A1AA'
+        <nav className="space-y-1">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setCurrentPage(item.id);
+                setSidebarOpen(false);
               }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                currentPage === item.id
+                  ? 'bg-violet-500/20 text-violet-400'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+              }`}
             >
-              {item.label}
-            </div>
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
           ))}
         </nav>
       </div>
 
-      {/* Main Content */}
-      <div style={{ marginLeft: '250px', padding: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-          Good afternoon, Zain!
-        </h1>
-        <p style={{ color: '#A1A1AA', marginBottom: '2rem' }}>
-          Here's what's happening with your business today.
-        </p>
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-        {/* Stats Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(4, 1fr)', 
-          gap: '1.5rem',
-          marginBottom: '2rem'
-        }}>
-          {[
-            { label: 'Revenue', value: '$24,500', change: '+12.5%', color: '#22C55E' },
-            { label: 'Tasks', value: '24', change: '+3 today', color: '#8B5CF6' },
-            { label: 'AI Agents', value: '6', change: 'All active', color: '#F59E0B' },
-            { label: 'Stores', value: '3', change: '1 needs attention', color: '#EF4444' },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              style={{
-                background: '#131316',
-                border: '1px solid #27272a',
-                borderRadius: '12px',
-                padding: '1.5rem'
-              }}
-            >
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                marginBottom: '0.75rem'
-              }}>
-                <span style={{ color: '#A1A1AA', fontSize: '0.875rem' }}>{stat.label}</span>
-                <span style={{ 
-                  fontSize: '0.75rem', 
-                  color: stat.color,
-                  fontWeight: 500
-                }}>
-                  {stat.change}
+      {/* Main Content */}
+      <div className="lg:ml-64 p-4 lg:p-8">
+        {renderContent()}
+      </div>
+    </div>
+  );
+}
+
+function DashboardContent() {
+  return (
+    <div>
+      <h1 className="text-2xl lg:text-3xl font-bold mb-2">Good afternoon, Zain!</h1>
+      <p className="text-gray-400 mb-6">Here's what's happening with your business today.</p>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[
+          { label: 'Revenue', value: '$24,500', change: '+12.5%', color: 'text-green-400' },
+          { label: 'Tasks', value: '24', change: '+3 today', color: 'text-violet-400' },
+          { label: 'AI Agents', value: '6', change: 'All active', color: 'text-amber-400' },
+          { label: 'Stores', value: '3', change: '1 needs attention', color: 'text-red-400' },
+        ].map((stat) => (
+          <div key={stat.label} className="bg-[#131316] border border-[#27272a] rounded-xl p-4">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-gray-400 text-sm">{stat.label}</span>
+              <span className={`text-xs ${stat.color}`}>{stat.change}</span>
+            </div>
+            <div className="text-xl lg:text-2xl font-bold">{stat.value}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Recent Activity */}
+      <div className="bg-[#131316] border border-[#27272a] rounded-xl p-4">
+        <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
+        
+        {[
+          { title: 'SEO Blog Post Generated', desc: "AI Agent completed 'Summer Fashion Trends 2024'", time: '2m ago' },
+          { title: 'Midnight Magic Completed', desc: 'Daily build finished successfully', time: '1h ago' },
+          { title: 'Social Manager Started', desc: 'Creating Instagram content for Fashion Hub', time: '2h ago' },
+          { title: 'Store Sync Failed', desc: 'Home & Garden - Shopify API error', time: '3h ago' },
+        ].map((activity, i) => (
+          <div key={i} className="flex items-start gap-3 py-3 border-b border-[#27272a] last:border-0">
+            <div className="w-10 h-10 bg-[#18181B] rounded-lg flex items-center justify-center flex-shrink-0">
+              <span>✓</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-medium truncate">{activity.title}</div>
+              <div className="text-gray-400 text-sm truncate">{activity.desc}</div>
+            </div>
+            <div className="text-gray-500 text-xs whitespace-nowrap">{activity.time}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TasksContent() {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: 'Campaign Generator V2', status: 'todo', priority: 'urgent' },
+    { id: 2, title: 'AI Hunter Agent', status: 'todo', priority: 'high' },
+    { id: 3, title: 'Systeme.io Integration', status: 'todo', priority: 'high' },
+    { id: 4, title: 'Shopify Store Connection', status: 'inprogress', priority: 'medium' },
+    { id: 5, title: 'Hunter.io API Setup', status: 'inprogress', priority: 'medium' },
+    { id: 6, title: 'MVP Dashboard UI', status: 'done', priority: 'urgent' },
+  ]);
+
+  const columns = [
+    { id: 'todo', title: 'To Do', color: 'border-gray-500' },
+    { id: 'inprogress', title: 'In Progress', color: 'border-violet-500' },
+    { id: 'review', title: 'Review', color: 'border-amber-500' },
+    { id: 'done', title: 'Done', color: 'border-green-500' },
+  ];
+
+  const getPriorityColor = (priority: string) => {
+    switch(priority) {
+      case 'urgent': return 'bg-red-500/20 text-red-400';
+      case 'high': return 'bg-orange-500/20 text-orange-400';
+      case 'medium': return 'bg-yellow-500/20 text-yellow-400';
+      default: return 'bg-gray-500/20 text-gray-400';
+    }
+  };
+
+  return (
+    <div>
+      <h1 className="text-2xl lg:text-3xl font-bold mb-6">Tasks</h1>
+      
+      <div className="overflow-x-auto">
+        <div className="flex gap-4 min-w-[800px] lg:min-w-0">
+          {columns.map((column) => (
+            <div key={column.id} className="flex-1 bg-[#131316] border border-[#27272a] rounded-xl p-4">
+              <div className={`flex items-center justify-between mb-4 pb-2 border-b-2 ${column.color}`}>
+                <span className="font-semibold">{column.title}</span>
+                <span className="text-sm text-gray-400">
+                  {tasks.filter(t => t.status === column.id).length}
                 </span>
               </div>
-              <div style={{ fontSize: '1.875rem', fontWeight: 700 }}>
-                {stat.value}
+              
+              <div className="space-y-3">
+                {tasks
+                  .filter(task => task.status === column.id)
+                  .map(task => (
+                    <div key={task.id} className="bg-[#1A1A1E] border border-[#27272a] rounded-lg p-3">
+                      <span className={`text-xs px-2 py-1 rounded ${getPriorityColor(task.priority)}`}>
+                        {task.priority}
+                      </span>
+                      <p className="mt-2 text-sm">{task.title}</p>
+                    </div>
+                  ))
+                }
               </div>
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  );
+}
 
-        {/* Task Board Preview */}
-        <div style={{ 
-          background: '#131316',
-          border: '1px solid #27272a',
-          borderRadius: '12px',
-          padding: '1.5rem'
-        }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>
-            Recent Activity
-          </h2>
-          
-          {[
-            { title: 'SEO Blog Post Generated', desc: "AI Agent completed 'Summer Fashion Trends 2024'", time: '2m ago' },
-            { title: 'Midnight Magic Completed', desc: 'Daily build finished successfully', time: '1h ago' },
-            { title: 'Social Manager Started', desc: 'Creating Instagram content for Fashion Hub', time: '2h ago' },
-            { title: 'Store Sync Failed', desc: 'Home & Garden - Shopify API error', time: '3h ago' },
-          ].map((activity, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                padding: '1rem 0',
-                borderBottom: i < 3 ? '1px solid #27272a' : 'none'
-              }}
-            >
-              <div style={{
-                width: '40px',
-                height: '40px',
-                background: '#18181B',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <span>✓</span>
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 500 }}>{activity.title}</div>
-                <div style={{ color: '#A1A1AA', fontSize: '0.875rem' }}>{activity.desc}</div>
-              </div>
-              <div style={{ color: '#71717A', fontSize: '0.75rem' }}>{activity.time}</div>
+function AgentsContent() {
+  const agents = [
+    { name: 'Content Manager', status: 'Active', task: 'Writing blog post', color: 'bg-green-500' },
+    { name: 'Social Manager', status: 'Busy', task: 'Creating Instagram content', color: 'bg-amber-500' },
+    { name: 'Email Manager', status: 'Active', task: 'Monitoring campaigns', color: 'bg-green-500' },
+    { name: 'Lead Manager', status: 'Offline', task: 'Scheduled for 2PM', color: 'bg-gray-500' },
+    { name: 'Video Manager', status: 'Active', task: 'Editing product video', color: 'bg-green-500' },
+    { name: 'Analytics Manager', status: 'Active', task: 'Generating reports', color: 'bg-green-500' },
+  ];
+
+  return (
+    <div>
+      <h1 className="text-2xl lg:text-3xl font-bold mb-6">AI Agents</h1>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {agents.map((agent) => (
+          <div key={agent.name} className="bg-[#131316] border border-[#27272a] rounded-xl p-4 flex items-center gap-4">
+            <div className={`w-3 h-3 rounded-full ${agent.color} ${agent.status === 'Active' ? 'animate-pulse' : ''}`} />
+            <div className="flex-1">
+              <div className="font-medium">{agent.name}</div>
+              <div className="text-sm text-gray-400">{agent.task}</div>
             </div>
-          ))}
+            <span className={`text-xs px-2 py-1 rounded ${
+              agent.status === 'Active' ? 'bg-green-500/20 text-green-400' :
+              agent.status === 'Busy' ? 'bg-amber-500/20 text-amber-400' :
+              'bg-gray-500/20 text-gray-400'
+            }`}>
+              {agent.status}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StoresContent() {
+  const stores = [
+    { name: 'Essora Skincare', status: 'Active', revenue: '$12,500', orders: 45 },
+    { name: 'Blaze Ignite', status: 'Active', revenue: '$8,000', orders: 23 },
+    { name: 'Fashion Hub', status: 'Warning', revenue: '$4,000', orders: 12 },
+  ];
+
+  return (
+    <div>
+      <h1 className="text-2xl lg:text-3xl font-bold mb-6">Stores</h1>
+      
+      <div className="space-y-4">
+        {stores.map((store) => (
+          <div key={store.name} className="bg-[#131316] border border-[#27272a] rounded-xl p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="font-medium">{store.name}</div>
+              <span className={`text-xs px-2 py-1 rounded ${
+                store.status === 'Active' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+              }`}>
+                {store.status}
+              </span>
+            </div>
+            <div className="flex gap-8 text-sm">
+              <div>
+                <span className="text-gray-400">Revenue: </span>
+                <span>{store.revenue}</span>
+              </div>
+              <div>
+                <span className="text-gray-400">Orders: </span>
+                <span>{store.orders}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SettingsContent() {
+  return (
+    <div>
+      <h1 className="text-2xl lg:text-3xl font-bold mb-6">Settings</h1>
+      
+      <div className="bg-[#131316] border border-[#27272a] rounded-xl p-4 max-w-md">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
+            <span className="text-2xl font-bold">Z</span>
+          </div>
+          <div>
+            <div className="font-semibold">Zain Moolla</div>
+            <div className="text-sm text-gray-400">Admin</div>
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Email</label>
+            <div>zain@blazeignite.com</div>
+          </div>
+          
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Company</label>
+            <div>Blaze Ignite</div>
+          </div>
         </div>
       </div>
     </div>
